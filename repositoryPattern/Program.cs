@@ -68,4 +68,24 @@ namespace repositoryPattern
             return value >= from && value <= to;
         }
     }
+
+    public class Configuration
+    {
+        private static Configuration _instance;
+        private Configuration()
+        {
+
+        }
+        public static Configuration Instance
+        {
+            get
+            {
+                if (null == _instance)
+                {
+                    Instance = new Configuration();
+                }
+                return _instance;
+            }
+        }
+    }
 }
