@@ -10,53 +10,29 @@ namespace repositoryPattern
     {
         static void Main(string[] args)
         {
-            var ticket = new Ticket() { Total = 1000 };
-            var repositoryTicket = new RepositoryTicket();
-            repositoryTicket.Add(ticket);
+            var numbers = new List<int>()
+            {
+                1, 2, 3
+            };
+            var a = 10;
+            var result = a.Between(9,20);// Between aparece con una flecha abajo por ser una extensión. Where también lo es, implementada por microsoft.
+            numbers.Where(Predicate); // Se le puede pasar el método predicate ya que where si nos vamos con f12 al origen, es una función genérica que requiere especificar la salida y el parámetro, dado que predicate lo cumple, se puede poner como parámetro para utilizarlo.
+            // De aquí viene --> public static IEnumerable<TSource> Where<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate); Se especifica que Tsource será el parámetro de entrada y el utilizado, de ahí que no se pden usar tipos de datos diferentes en el parámetro y luego en el método.
+            numbers.Where(n => n > 1); // Esto es una lambda expression, que no tienen return. n sería value | => es un método anónimo, el que sea, y le decimos que devolverá si n>1. es una función con una entrada, devuelve un booleano, de forma que coincide con el where y puede usarse.
+            // Sería equivalente a esta función:    
         }
+        
+        static bool Predicate(int value) // Aunque se vaya a usar como un genérico al que le vale todo, al declarar int en el parámetro, limitamos el tipo de datos que acepta el método.
+        {
+            return value > 1;
+        }
+    }
 
-        public abstract class EntityBase
+    public static class ExtensionInt // Vamos a extender el tipo entero. Es imprescindible que sea estática para pdoer extenderla.
+    {
+        public static bool Between(this int value, int from, int to) // El this hace que tome como primer parámetro el valor de nuestra variable sin que tengamos que ponerlo nosotros. Después de this se pude poner tanto un tipo de datos como person, ticket, etc, para que solo se pueda utilizar en esos casos.
         {
-            public Guid Id { get; set; }
-            protected EntityBase Create()
-            {
-                return new EntityBase() { Id = new Guid() };
-            }
-            public static Guid CreateIdentifier()
-            {
-                return new Guid();
-            }
-        }
-        public class Ticket : EntityBase
-        {
-            public Decimal Total { get; set; }
-        }
-        public class Person : EntityBase
-        {
-            public string Name { get; set; }
-        }
-        public class RepositoryTicket : RepositoryGeneric<Ticket> // Al poner la herencia de repositorygeneric<Person> ya no es necesario implementar el método Add que hay dentro de la clase (lo que está comentado)
-        {
-            /*public void Add(Ticket ticket)
-            {
-                ticket.Id = Ticket.CreateIdentifier();
-                //TODO
-            }*/
-        }
-        public class RepositoryPerson : RepositoryGeneric<Person> // Al poner la herencia de repositorygeneric<Person> ya no es necesario implementar el método Add que hay dentro de la clase (lo que está comentado). Aquí se podrían añadir más campos ya concretos de person, Id ya lo tendrían porque viene del genérico.
-        {
-            /*public void Add(Person person)
-            {
-                person.Id = Person.CreateIdentifier();
-                //TODO
-            }*/
-        }
-        public class RepositoryGeneric<T> where T : EntityBase // El where pone una restricción, sólo objetos "T" que hereden de entitybase
-        {
-            public virtual void Add(T entity)
-            {
-                entity.Id = EntityBase.CreateIdentifier(); // Los objetos tendrán Id, se pueden añadir más campos.
-            }
+            return value >= from && value <= to;
         }
     }
 }
